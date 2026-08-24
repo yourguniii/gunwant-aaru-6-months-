@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#080014">
+<title>Our Little Universe ❤️</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+font-family:Arial,sans-serif;
+background:#07000f;
+color:#fff;
+overflow-x:hidden
+}
+canvas{
+position:fixed;
+inset:0;
+z-index:-5
+}
+#hearts{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:100
+}
+#lock{
+position:fixed;
+inset:0;
+z-index:50;
+display:flex;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at center,#260035,#050008 70%);
+padding:25px
+}
+.lockbox{
+width:min(430px,100%);
+padding:35px 25px;
+text-align:center;
+border:1px solid rgba(255,255,255,.18);
+border-radius:28px;
+background:rgba(255,255,255,.07);
+backdrop-filter:blur(20px);
+box-shadow:0 25px 80px #000
+}
+.lockheart{font-size:70px;animation:pulse 1.5s infinite}
+.lockbox h1{font-size:35px;margin:15px 0}
+.lockbox p{color:#bbb;margin-bottom:20px;line-height:1.6}
+input{
+width:100%;
+padding:15px;
+border-radius:14px;
+border:1px solid #ffffff30;
+background:#ffffff12;
+color:white;
+outline:none;
+text-align:center;
+font-size:17px
+}
+button{
+border:0;
+padding:13px 22px;
+border-radius:30px;
+background:#fff;
+color:#16001e;
+font-weight:bold;
+cursor:pointer;
+margin:7px;
+transition:.3s
+}
+button:hover{transform:translateY(-3px) scale(1.03)}
+#error{color:#ff7d9c;margin-top:10px;min-height:20px}
+
+main{display:none}
+section{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:45px 18px
+}
+.container{width:min(950px,100%)}
+.card{
+width:100%;
+padding:35px;
+border-radius:30px;
+background:rgba(255,255,255,.065);
+border:1px solid rgba(255,255,255,.13);
+backdrop-filter:blur(18px);
+box-shadow:0 20px 80px #0008;
+text-align:center
+}
+h1{
+font-size:clamp(42px,9vw,85px);
+line-height:1.05
+}
+h2{font-size:clamp(28px,6vw,45px);margin-bottom:18px}
+p{line-height:1.8;color:#ddd}
+.heroHeart{font-size:80px;animation:pulse 1.4s infinite}
+.sub{color:#aaa;margin:18px auto;max-width:650px}
+
+#counter{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin:30px 0
+}
+.time{
+background:#ffffff0d;
+padding:20px 8px;
+border-radius:20px
+}
+.time b{
+display:block;
+font-size:32px;
+margin-bottom:5px
+}
+.time span{color:#aaa;font-size:13px}
+
+.timeline{
+position:relative;
+margin:35px auto;
+max-width:700px;
+text-align:left
+}
+.timeline:before{
+content:"";
+position:absolute;
+left:18px;
+top:0;
+bottom:0;
+width:2px;
+background:#ffffff25
+}
+.event{
+position:relative;
+margin:25px 0 25px 50px;
+padding:20px;
+border-radius:20px;
+background:#ffffff09
+}
+.event:before{
+content:"❤️";
+position:absolute;
+left:-43px;
+top:18px
+}
+.event h3{margin-bottom:8px}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:15px;
+margin-top:25px
+}
+.gallery img{
+width:100%;
+height:210px;
+object-fit:cover;
+border-radius:20px;
+transition:.4s;
+cursor:pointer
+}
+.gallery img:hover{
+transform:scale(1.04) rotate(1deg)
+}
+
+.envelope{
+width:250px;
+height:170px;
+margin:35px auto;
+position:relative;
+cursor:pointer;
+perspective:600px
+}
+.envBody{
+position:absolute;
+inset:0;
+background:#ffffff;
+border-radius:8px;
+}
+.flap{
+position:absolute;
+left:0;
+top:0;
+width:0;
+height:0;
+border-left:125px solid transparent;
+border-right:125px solid transparent;
+border-top:90px solid #ddd;
+transform-origin:top;
+transition:.8s;
+z-index:3
+}
+.envelope.open .flap{
+transform:rotateX(180deg)
+}
+.paper{
+position:absolute;
+width:90%;
+height:130px;
+left:5%;
+top:15px;
+background:#fff;
+color:#222;
+padding:15px;
+border-radius:8px;
+transition:.8s;
+z-index:2;
+overflow:auto;
+font-size:14px
+}
+.envelope.open .paper{
+transform:translateY(-75px)
+}
+
+.quiz{
+max-width:600px;
+margin:auto
+}
+.option{
+display:block;
+width:100%;
+margin:10px 0;
+background:#ffffff0c;
+color:#fff;
+border:1px solid #ffffff20
+}
+#quizResult{margin-top:15px;min-height:25px}
+
+.secret{
+display:none
+}
+
+.finalText{
+font-size:20px;
+line-height:2;
+max-width:700px;
+margin:auto
+}
+
+.music{
+position:fixed;
+right:18px;
+bottom:18px;
+z-index:30;
+width:55px;
+height:55px;
+padding:0;
+border-radius:50%;
+font-size:20px
+}
+
+.small{font-size:13px;color:#888}
+
+@keyframes pulse{
+50%{transform:scale(1.12)}
+}
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(30px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.reveal{animation:fadeUp .8s}
+
+@media(max-width:600px){
+.card{padding:24px 17px}
+#counter{grid-template-columns:repeat(2,1fr)}
+.gallery img{height:180px}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+<div id="hearts"></div>
+
+<!-- ================= LOCK SCREEN ================= -->
+
+<div id="lock">
+
+<div class="lockbox">
+
+<div class="lockheart">❤️</div>
+
+<h1>Our Secret Place</h1>
+
+<p>
+A little surprise made specially for you.<br>
+Enter the secret code to begin.
+</p>
+
+<input
+id="password"
+type="password"
+placeholder="Secret code"
+/>
+
+<br>
+
+<button onclick="unlock()">Unlock ❤️</button>
+
+<div id="error"></div>
+
+<p class="small">Made with love ✨</p>
+
+</div>
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main id="main">
+
+<button class="music" onclick="toggleMusic()" id="musicBtn">🎵</button>
+
+<audio id="music" loop>
+<!-- OPTIONAL:
+     Replace this with your own music file:
+     <source src="music.mp3" type="audio/mpeg">
+-->
+</audio>
+
+
+<!-- HERO -->
+
+<section>
+
+<div class="container">
+
+<div class="card reveal">
+
+<div class="heroHeart">❤️</div>
+
+<h1 id="heroTitle"></h1>
+
+<p class="sub" id="heroSub"></p>
+
+<button onclick="go('counterSection')">
+Start Our Journey ↓
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- COUNTER -->
+
+<section id="counterSection">
+
+<div class="container">
+
+<div class="card">
+
+<h2>Time Since We Became Us ⏳</h2>
+
+<p>
+Every second became a tiny part of our story.
+</p>
+
+<div id="counter">
+
+<div class="time">
+<b id="days">0</b>
+<span>DAYS</span>
+</div>
+
+<div class="time">
+<b id="hours">0</b>
+<span>HOURS</span>
+</div>
+
+<div class="time">
+<b id="minutes">0</b>
+<span>MINUTES</span>
+</div>
+
+<div class="time">
+<b id="seconds">0</b>
+<span>SECONDS</span>
+</div>
+
+</div>
+
+<p class="small" id="counterNote"></p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TIMELINE -->
+
+<section>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Our Six Chapters 📖</h2>
+
+<p>
+Six months. Six little chapters. One beautiful story.
+</p>
+
+<div class="timeline">
+
+<div class="event">
+<h3>Chapter 01 — The Beginning 🌱</h3>
+<p>Every beautiful story has a first moment.</p>
+</div>
+
+<div class="event">
+<h3>Chapter 02 — Getting Closer 💕</h3>
+<p>We started creating our own little world.</p>
+</div>
+
+<div class="event">
+<h3>Chapter 03 — More Memories 📸</h3>
+<p>The ordinary days slowly became special.</p>
+</div>
+
+<div class="event">
+<h3>Chapter 04 — Laughs & Talks 😂</h3>
+<p>Random conversations became some of my favourite memories.</p>
+</div>
+
+<div class="event">
+<h3>Chapter 05 — Through Everything 🌙</h3>
+<p>We kept choosing each other through the ups and downs.</p>
+</div>
+
+<div class="event">
+<h3>Chapter 06 — Six Months ❤️</h3>
+<p>And here we are… still writing our story.</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- GALLERY -->
+
+<section>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Our Memory Wall 📸</h2>
+
+<p>
+These pictures are little pieces of our story.
+</p>
+
+<div class="gallery" id="gallery"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- LETTER -->
+
+<section>
+
+<div class="container">
+
+<div class="card">
+
+<h2>A Letter For You 💌</h2>
+
+<p>Tap the envelope.</p>
+
+<div
+class="envelope"
+id="envelope"
+onclick="openEnvelope()"
+>
+
+<div class="envBody"></div>
+
+<div class="paper" id="paper">
+Your letter will appear here...
+</div>
+
+<div class="flap"></div>
+
+</div>
+
+<button onclick="nextLetter()">
+Another Letter 💌
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- QUIZ -->
+
+<section>
+
+<div class="container">
+
+<div class="card">
+
+<h2>One Last Little Game 🧩</h2>
+
+<p>
+Let's see if you can unlock the next surprise.
+</p>
+
+<br>
+
+<div class="quiz">
+
+<h3 id="question"></h3>
+
+<div id="options"></div>
+
+<div id="quizResult"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SECRET -->
+
+<section class="secret" id="secret">
+
+<div class="container">
+
+<div class="card">
+
+<div class="heroHeart">🎁</div>
+
+<h2>You Found The Hidden Chapter!</h2>
+
+<p class="finalText" id="secretText"></p>
+
+<br>
+
+<button onclick="celebrate()">
+Open Final Surprise ✨
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FINAL -->
+
+<section>
+
+<div class="container">
+
+<div class="card">
+
+<div class="heroHeart">❤️</div>
+
+<h2>Happy 6 Months</h2>
+
+<p class="finalText" id="finalText"></p>
+
+<br>
+
+<button onclick="celebrate()">
+Celebrate Us 🎉
+</button>
+
+<p class="small">
+Made specially for you ❤️
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   🔥 EDIT ONLY THIS SECTION
+===================================================== */
+
+const CONFIG = {
+
+    yourName: "Gunvant",
+
+    herName: "Her Name",
+
+    /*
+      YYYY-MM-DDTHH:MM:SS
+
+      Example:
+      2026-02-24T00:00:00
+    */
+
+    anniversary: "2026-02-24T00:00:00",
+
+    /*
+      Secret password
+    */
+
+    password: "2402",
+
+    title:
+    "6 Months With You ❤️",
+
+    subtitle:
+    "Welcome to our little universe — made from memories, moments and love.",
+
+    photos: [
+        "photo1.jpg",
+        "photo2.jpg",
+        "photo3.jpg",
+        "photo4.jpg",
+        "photo5.jpg",
+        "photo6.jpg"
+    ],
+
+    letters: [
+
+        "When I miss you, I don't just miss talking to you. I miss the little moments, the random conversations and the feeling of having someone special in my life. ❤️",
+
+        "If you're ever having a bad day, remember that one bad day doesn't define your whole story. Keep smiling, keep going and remember how special you are. 🌷",
+
+        "Six months ago, we started a chapter that became full of memories, laughs, conversations and emotions. Thank you for being a part of my story. ❤️"
+
+    ],
+
+    finalMessage:
+    "Six months may be a number, but the memories behind that number are priceless. I hope we keep creating many more chapters together. ❤️",
+
+    secretMessage:
+    "You reached the hidden chapter. This little website is only a small way of saying that these six months have meant a lot to me. Whatever comes next, I hope we always remember the good moments we created. ❤️"
+
+};
+
+
+/* =====================================================
+   BASIC SETUP
+===================================================== */
+
+document.getElementById("heroTitle").innerText =
+CONFIG.title;
+
+document.getElementById("heroSub").innerText =
+CONFIG.subtitle;
+
+document.getElementById("secretText").innerText =
+CONFIG.secretMessage;
+
+document.getElementById("finalText").innerText =
+CONFIG.finalMessage;
+
+
+/* =====================================================
+   PASSWORD
+===================================================== */
+
+function unlock(){
+
+    const value =
+    document.getElementById("password").value;
+
+    if(value === CONFIG.password){
+
+        document.getElementById("lock").style.display =
+        "none";
+
+        document.getElementById("main").style.display =
+        "block";
+
+        startMusic();
+
+        burst(25);
+
+    }else{
+
+        document.getElementById("error").innerText =
+        "Wrong code 😏 Try again.";
+
+    }
+
+}
+
+document.getElementById("password")
+.addEventListener("keydown",function(e){
+
+    if(e.key === "Enter") unlock();
+
+});
+
+
+/* =====================================================
+   COUNTER
+===================================================== */
+
+const start =
+new Date(CONFIG.anniversary).getTime();
+
+function updateCounter(){
+
+    const now =
+    Date.now();
+
+    let diff =
+    now - start;
+
+    if(diff < 0){
+
+        document.getElementById("counterNote")
+        .innerText =
+        "The journey hasn't started yet.";
+
+        return;
+    }
+
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    document.getElementById("days").innerText =
+    Math.floor(diff/day);
+
+    document.getElementById("hours").innerText =
+    Math.floor((diff%day)/hour);
+
+    document.getElementById("minutes").innerText =
+    Math.floor((diff%hour)/minute);
+
+    document.getElementById("seconds").innerText =
+    Math.floor((diff%minute)/second);
+
+}
+
+setInterval(updateCounter,1000);
+updateCounter();
+
+
+/* =====================================================
+   GALLERY
+===================================================== */
+
+const gallery =
+document.getElementById("gallery");
+
+CONFIG.photos.forEach((src,index)=>{
+
+    const img =
+    document.createElement("img");
+
+    img.src = src;
+
+    img.alt =
+    "Memory "+(index+1);
+
+    img.onclick = () => {
+
+        img.requestFullscreen?.();
+
+    };
+
+    img.onerror = () => {
+
+        img.style.display = "none";
+
+    };
+
+    gallery.appendChild(img);
+
+});
+
+
+/* =====================================================
+   LETTER SYSTEM
+===================================================== */
+
+let letterIndex = 0;
+
+function showLetter(){
+
+    document.getElementById("paper")
+    .innerText =
+    CONFIG.letters[letterIndex];
+
+}
+
+function openEnvelope(){
+
+    document.getElementById("envelope")
+    .classList.add("open");
+
+    showLetter();
+
+}
+
+function nextLetter(){
+
+    letterIndex++;
+
+    if(letterIndex >= CONFIG.letters.length){
+
+        letterIndex = 0;
+
+    }
+
+    document.getElementById("envelope")
+    .classList.remove("open");
+
+    setTimeout(()=>{
+
+        showLetter();
+
+        document.getElementById("envelope")
+        .classList.add("open");
+
+    },300);
+
+}
+
+
+/* =====================================================
+   QUIZ
+===================================================== */
+
+const questions = [
+
+{
+q:"What is the most important part of our story?",
+a:[
+"Perfect days",
+"Expensive gifts",
+"Every little memory ❤️"
+],
+correct:2
+},
+
+{
+q:"What should we collect more of?",
+a:[
+"Memories 📸",
+"Arguments 😭",
+"Homework 😂"
+],
+correct:0
+},
+
+{
+q:"What's waiting at the end?",
+a:[
+"Nothing",
+"A hidden surprise 🎁",
+"Another exam"
+],
+correct:1
+}
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion(){
+
+    const q =
+    questions[currentQuestion];
+
+    document.getElementById("question")
+    .innerText =
+    q.q;
+
+    const options =
+    document.getElementById("options");
+
+    options.innerHTML = "";
+
+    q.a.forEach((text,index)=>{
+
+        const btn =
+        document.createElement("button");
+
+        btn.className = "option";
+
+        btn.innerText = text;
+
+        btn.onclick = () =>
+        answer(index);
+
+        options.appendChild(btn);
+
+    });
+
+}
+
+function answer(index){
+
+    const q =
+    questions[currentQuestion];
+
+    if(index === q.correct){
+
+        score++;
+
+        document.getElementById("quizResult")
+        .innerText =
+        "Correct ❤️";
+
+    }else{
+
+        document.getElementById("quizResult")
+        .innerText =
+        "Hmm 😏 try the other one.";
+
+        return;
+
+    }
+
+    currentQuestion++;
+
+    if(currentQuestion >= questions.length){
+
+        document.getElementById("question")
+        .innerText =
+        "You completed the quiz! 🎉";
+
+        document.getElementById("options")
+        .innerHTML = "";
+
+        document.getElementById("quizResult")
+        .innerText =
+        "Score: "+score+"/"+questions.length;
+
+        document.getElementById("secret")
+        .style.display = "flex";
+
+        burst(50);
+
+        return;
+
+    }
+
+    setTimeout(loadQuestion,700);
+
+}
+
+loadQuestion();
+
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+function go(id){
+
+    document.getElementById(id)
+    .scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================================
+   HEART CELEBRATION
+===================================================== */
+
+function burst(amount){
+
+    for(let i=0;i<amount;i++){
+
+        const heart =
+        document.createElement("div");
+
+        heart.innerText =
+        ["❤️","💖","💕","✨","💗"]
+        [Math.floor(Math.random()*5)];
+
+        heart.style.position="fixed";
+
+        heart.style.left =
+        Math.random()*100+"vw";
+
+        heart.style.top =
+        "105vh";
+
+        heart.style.fontSize =
+        (15+Math.random()*25)+"px";
+
+        heart.style.zIndex="999";
+
+        heart.style.transition =
+        "transform 3s ease-out, opacity 3s";
+
+        document.getElementById("hearts")
+        .appendChild(heart);
+
+        setTimeout(()=>{
+
+            heart.style.transform =
+            `translateY(-${window.innerHeight+150}px)
+             rotate(${Math.random()*500}deg)`;
+
+            heart.style.opacity="0";
+
+        },50);
+
+        setTimeout(()=>{
+            heart.remove();
+        },3200);
+
+    }
+
+}
+
+function celebrate(){
+
+    burst(100);
+
+}
+
+
+/* =====================================================
+   MUSIC
+===================================================== */
+
+const music =
+document.getElementById("music");
+
+let playing = false;
+
+function startMusic(){
+
+    /*
+      Browser may block autoplay.
+      That's okay — use the music button.
+    */
+
+    music.play().then(()=>{
+
+        playing=true;
+
+        document.getElementById("musicBtn")
+        .innerText="⏸️";
+
+    }).catch(()=>{});
+
+}
+
+function toggleMusic(){
+
+    if(playing){
+
+        music.pause();
+
+        playing=false;
+
+        document.getElementById("musicBtn")
+        .innerText="🎵";
+
+    }else{
+
+        music.play();
+
+        playing=true;
+
+        document.getElementById("musicBtn")
+        .innerText="⏸️";
+
+    }
+
+}
+
+
+/* =====================================================
+   STAR FIELD
+===================================================== */
+
+const canvas =
+document.getElementById("stars");
+
+const ctx =
+canvas.getContext("2d");
+
+let stars = [];
+
+function resize(){
+
+    canvas.width =
+    window.innerWidth;
+
+    canvas.height =
+    window.innerHeight;
+
+}
+
+window.addEventListener("resize",resize);
+
+resize();
+
+for(let i=0;i<160;i++){
+
+    stars.push({
+
+        x:Math.random()*canvas.width,
+
+        y:Math.random()*canvas.height,
+
+        r:Math.random()*1.8,
+
+        speed:.1+Math.random()*.5
+
+    });
+
+}
+
+function animate(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle="white";
+
+    stars.forEach(s=>{
+
+        ctx.beginPath();
+
+        ctx.arc(
+            s.x,
+            s.y,
+            s.r,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        s.y -= s.speed;
+
+        if(s.y < 0){
+
+            s.y =
+            canvas.height;
+
+        }
+
+    });
+
+    requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
